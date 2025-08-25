@@ -17,8 +17,7 @@ These layers are useful for:
 ## 📂 What’s in this repo?
 
 * `download_layers.py` → A Python script to automatically download **all available layers** from the NSDI MapServer in their original formats.
-* `SriLanka_Layers.zip` → A compressed archive containing all downloaded layers for offline use.
-* Individual files in formats such as **GeoJSON, JSON, PBF**, depending on what the service provides.
+* `SriLanka_Layers.zip` → A compressed archive containing all layers.
 
 ## 🔽 Where does the data come from?
 
