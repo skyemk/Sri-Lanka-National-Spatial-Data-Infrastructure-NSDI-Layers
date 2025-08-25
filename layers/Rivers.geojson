@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+<style> body {
+      font-family: Avenir-Light, Verdana, Geneva, sans-serif;
+      font-weight: 0;
+      font-size: 13px;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 16px;
+      color: #38698c;
+      float: left;
+      margin: 13px 0 0;
+    }
+
+    a {
+      text-decoration: underline;
+      color: #38698c;
+    }
+
+    #waConfig {
+      margin-top: 36px;
+    }
+
+    .logoImg {
+      float: left;
+      margin: 0 15px 0 0;
+    }
+    
+    .helpHolder {
+      width: 670px;
+      margin: 0 auto;
+    }
+
+    .pane {
+      -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      border-radius: 8px 8px 8px 8px;
+      -moz-box-shadow: 0 0 3px #000;
+      -webkit-box-shadow: 0 0 3px #000;
+      box-shadow: 0 0 3px #000;
+      border: none;
+      background-color: #fff;
+    }
+
+    .paneTitleBar {
+      background-color: #38698c;
+      background: -moz-linear-gradient(center top, #64a7ce 0%, #38698c 100%);
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#64a7ce), to(#38698c));
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64a7ce', endColorstr='#38698c');
+      color: #fff;
+      border: none;
+      height:20px;
+    }
+
+    .paneContent {
+      border-top: none;
+      background-color: transparent;
+      padding: 4px 38px 20px;
+    }
+
+    .radioHolder{
+      padding:0 0 16px 48px;
+    }
+
+    .configDialog {
+      width: 728px;
+      font-size: 1em
+      z-index: 1001 !important;
+      margin: 0 auto;
+    }
+
+    .ErrorText {
+      width: 550px;
+    }
+
+    .logoHolder {
+      background-color: #f7f7f3;
+      -moz-border-radius: 10px 10px 0 0;
+      -webkit-border-radius: 10px 10px 0 0;
+      border-radius: 10px 10px 0 0;
+      background-image: -moz-linear-gradient(center top, #f7f7f3, #e1e1dd);
+      background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f7f7f3), to(#e1e1dd));
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e7e7e7');
+      height: 42px;
+      overflow: hidden;
+      padding: 0 10px;
+    }
+
+     input[type=submit] {
+      border: 1px solid #759dc0;
+      padding: 2px 4px 4px 4px;
+      color: #000000;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+      -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+      background-color: #bcd8f4;
+      background-repeat: repeat-x;
+      background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+      background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+      background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+      background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bcd8f4', endColorstr='#ffffff');
+      cursor: pointer;
+      _background-image: none;
+      float:right;
+    }
+
+    input[type=submit]:hover {
+      background-color: #86bdf2;
+      color: #000000;
+      -webkit-transition-duration: 0.2s;
+      -moz-transition-duration: 0.2s;
+      transition-duration: 0.2s;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#86bdf2', endColorstr='#ffffff');
+    }
+
+    input[type=radio] {
+      cursor: pointer;
+      margin:0 30px 0 0 ;
+    }  
+
+    input[type=checkbox] {
+      cursor: pointer;
+      margin:0 20px 0 0 ;
+    }  
+
+    a.tooltip span {
+      display:none; 
+      padding:2px 3px; 
+      margin-left:8px; 
+      width:300px;
+    }
+    a.tooltip.about:hover span{
+	margin-left:-320px;
+	width:200px
+	}
+    a.tooltip.about:focus span{
+	margin-left:-320px;
+	width:200px
+	}
+    a.tooltip:hover span {
+      display:inline; 
+      position:absolute; 
+      text-decoration:  none;
+       -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      border-radius: 8px 8px 8px 8px;
+      -moz-box-shadow: 0 0 3px #000;
+      -webkit-box-shadow: 0 0 3px #000;
+      box-shadow: 0 0 3px #888;
+      border: none;
+      padding: 15px;
+      background:#d6ffbd;
+      color: #444444;
+      margin: 0 0 30px;
+    }
+
+     a.tooltip:focus span {
+      display:inline; 
+      position:absolute; 
+      text-decoration:  none;
+       -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      border-radius: 8px 8px 8px 8px;
+      -moz-box-shadow: 0 0 3px #000;
+      -webkit-box-shadow: 0 0 3px #000;
+      box-shadow: 0 0 3px #888;
+      border: none;
+      padding: 15px;
+      background:#d6ffbd;
+      color: #444444;
+      margin: 0 0 30px;
+    }
+    
+    .statusTable {
+      -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      border-radius: 8px 8px 8px 8px;
+      -moz-box-shadow: 0 0 3px #000;
+      -webkit-box-shadow: 0 0 3px #000;
+      box-shadow: 0 0 3px #888;
+      border: none;
+      padding: 15px;
+      background:#d6ffbd;
+      margin: 0 0 30px;
+	color: #444444;
+      width: 625px;
+    }
+    
+    .configTable {
+      width: 640px;
+    }
+
+    .runAtExample {
+      font-size: 12px;
+      margin: 5px 0;
+      display: block;
+      color: #4B4B4B;
+    }
+    
+    .enableAdminAccessHolder {
+     height: 70px;
+    }
+    
+    .ExampleLabel {
+      font-size: 12px;
+      padding-left: 0;
+      display: block;
+      margin: 5px 0;
+      color: #4B4B4B;
+    }
+    
+    .errorTitle	{
+      color:#FF0000; 
+      font-size:large; 
+      font-family: Arial,Verdana,arial,sans-serif;
+      font-weight:bold;
+    }
+            
+    .errorLabel {
+      font-family: Arial,Verdana,arial,sans-serif;
+      font-size: 15px;
+    }</style>
+
+  <title>
+	Application Error
+</title></head>
+<body>
+    <div class="helpHolder">
+      <p id="helpLinkElement" class="help">
+      </p>
+    </div>
+    <div class="configDialog pane">
+	   <div class="logoHolder">
+	     <img alt="Esri Logo" class="logoImg" src="/server/webadaptor/images/logo.png" />
+	     <h1>ArcGIS Web Adaptor</h1>
+	   </div>
+	   <div class="paneTitleBar"></div>
+	<div id="contentHolder" class="paneContent">
+
+<div id="Div2" class="statusTable" style="background: #FFCDCD; padding-top: 5px; margin-top: 14px">
+                      <table>
+                        <tr>
+                          <td width="50">
+                            <img alt="" src="/server/webadaptor/images/error.png" />
+                          </td>
+                          <td>
+							<p class="errorLabel">
+							    Could not access any server machines. Please contact your system administrator.
+                                
+							</p> 
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+
+	</div>
+      </div>
+</body>
+</html>
