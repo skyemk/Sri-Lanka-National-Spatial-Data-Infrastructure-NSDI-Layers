@@ -18,6 +18,7 @@ These layers are useful for:
 
 * `download_layers.py` → A Python script to automatically download **all available layers** from the NSDI MapServer in their original formats.
 * `Release file` → A compressed archive containing all layers.
+* `Layers` → Individual layers.
 
 ## 🔽 Where does the data come from?
 
