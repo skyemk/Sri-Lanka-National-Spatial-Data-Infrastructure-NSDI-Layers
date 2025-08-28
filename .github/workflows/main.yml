@@ -1,4 +1,4 @@
-name: Onewaysync
+name: onewaysync
 
 on:
   schedule:
@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl jq sha256sum
+          sudo apt-get install -y curl jq
 
       - name: Download all ArcGIS layers to temp folder
         run: |
@@ -46,15 +46,13 @@ jobs:
       - name: Compare temp layers with existing layers
         id: checksum
         run: |
-          mkdir -p .checksums
           CHANGED=false
-
           for TEMP_FILE in temp_layers/*; do
             BASENAME=$(basename "$TEMP_FILE")
             TARGET_FILE="layers/$BASENAME"
 
             if [ -f "$TARGET_FILE" ]; then
-              if ! cmp -s "$TEMP_FILE" "$TARGET_FILE"; then
+              if ! sha256sum -c <(sha256sum "$TEMP_FILE" | awk '{print $1" "$2}' OFS=" ") --status 2>/dev/null; then
                 echo "$BASENAME has changed."
                 cp "$TEMP_FILE" "$TARGET_FILE"
                 CHANGED=true
