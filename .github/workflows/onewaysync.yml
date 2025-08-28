@@ -3,7 +3,7 @@ name: Onewaysync
 on:
   schedule:
     - cron: "0 2 * * 0"  # every Sunday at 2 AM UTC
-  workflow_dispatch:      # allow manual trigger
+  workflow_dispatch:      # manual trigger
 
 jobs:
   update-layers:
@@ -18,44 +18,61 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y curl jq sha256sum
 
-      - name: Download all ArcGIS layers
+      - name: Download all ArcGIS layers to temp folder
         run: |
-          mkdir -p layers
+          mkdir -p layers temp_layers
           BASE_URL="https://gisapps.nsdi.gov.lk/server/rest/services/Srilanka/All_Layers/MapServer"
 
-          # Get list of layer IDs and names
-          LAYERS=$(curl -s "${BASE_URL}?f=json" | jq -r '.layers[] | "\(.id) \(.name)"')
+          # Get list of all layers with id, name, type
+          LAYERS=$(curl -s "${BASE_URL}?f=json" | jq -r '.layers[] | "\(.id) \(.name) \(.type)"')
 
-          while read -r ID NAME; do
-            FILE_NAME=$(echo "$NAME" | tr ' ' '_').geojson
-            echo "Downloading $NAME..."
-            curl -s "${BASE_URL}/${ID}/query?where=1=1&outFields=*&f=geojson" -o "layers/$FILE_NAME"
+          while read -r ID NAME TYPE; do
+            FILE_NAME=$(echo "$NAME" | tr ' ' '_')
+            echo "Processing layer $ID - $NAME ($TYPE)..."
+
+            case $TYPE in
+              Feature\ Layer)
+                curl -s "${BASE_URL}/${ID}/query?where=1=1&outFields=*&f=geojson" -o "temp_layers/${FILE_NAME}.geojson"
+                ;;
+              Raster\ Layer)
+                curl -s "${BASE_URL}/${ID}/export?f=image&format=png" -o "temp_layers/${FILE_NAME}.png"
+                ;;
+              *)
+                curl -s "${BASE_URL}/${ID}/query?where=1=1&outFields=*&f=esriJSON" -o "temp_layers/${FILE_NAME}.json"
+                ;;
+            esac
           done <<< "$LAYERS"
 
-      - name: Generate checksums
-        run: |
-          mkdir -p .checksums
-          sha256sum layers/*.geojson > .checksums/new_sums.txt
-
-      - name: Compare checksums
+      - name: Compare temp layers with existing layers
         id: checksum
         run: |
-          if [ -f .checksums/old_sums.txt ]; then
-            if cmp -s .checksums/new_sums.txt .checksums/old_sums.txt; then
-              echo "No changes detected."
-              echo "changed=false" >> $GITHUB_OUTPUT
-              exit 0
+          mkdir -p .checksums
+          CHANGED=false
+
+          for TEMP_FILE in temp_layers/*; do
+            BASENAME=$(basename "$TEMP_FILE")
+            TARGET_FILE="layers/$BASENAME"
+
+            if [ -f "$TARGET_FILE" ]; then
+              if ! cmp -s "$TEMP_FILE" "$TARGET_FILE"; then
+                echo "$BASENAME has changed."
+                cp "$TEMP_FILE" "$TARGET_FILE"
+                CHANGED=true
+              fi
+            else
+              echo "$BASENAME is new."
+              cp "$TEMP_FILE" "$TARGET_FILE"
+              CHANGED=true
             fi
-          fi
-          echo "Changes detected."
-          echo "changed=true" >> $GITHUB_OUTPUT
+          done
+
+          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
 
       - name: Commit & Push
         if: steps.checksum.outputs.changed == 'true'
         run: |
-          cp .checksums/new_sums.txt .checksums/old_sums.txt
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add layers/ .checksums/old_sums.txt
+          git add layers/
           git commit -m "Update ArcGIS layers [skip ci]"
           git push
