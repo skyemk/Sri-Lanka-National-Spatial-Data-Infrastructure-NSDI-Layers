@@ -1,0 +1,60 @@
+name: Extract ArcGIS Layers
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"   # every Sunday at 2 AM UTC
+  workflow_dispatch:       # allow manual trigger
+
+jobs:
+  update-layers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gdal-bin curl jq
+
+      - name: Download all ArcGIS layers
+        run: |
+          mkdir -p layers
+          BASE_URL="https://gisapps.nsdi.gov.lk/server/rest/services/Srilanka/All_Layers/MapServer"
+
+          # Get list of layer IDs
+          LAYER_IDS=$(curl -s "${BASE_URL}?f=json" | jq -r '.layers[].id')
+
+          for ID in $LAYER_IDS; do
+            echo "Downloading layer $ID..."
+            ogr2ogr -f GeoJSON "layers/layer_${ID}.json" "${BASE_URL}/${ID}"
+          done
+
+      - name: Generate checksums
+        run: |
+          mkdir -p .checksums
+          sha256sum layers/*.json > .checksums/new_sums.txt
+
+      - name: Compare checksums
+        id: checksum
+        run: |
+          if [ -f .checksums/old_sums.txt ]; then
+            if cmp -s .checksums/new_sums.txt .checksums/old_sums.txt; then
+              echo "No changes in layers."
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          fi
+          echo "Changes detected."
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit & Push
+        if: steps.checksum.outputs.changed == 'true'
+        run: |
+          cp .checksums/new_sums.txt .checksums/old_sums.txt
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add layers/ .checksums/old_sums.txt
+          git commit -m "Update ArcGIS layers [skip ci]"
+          git push
