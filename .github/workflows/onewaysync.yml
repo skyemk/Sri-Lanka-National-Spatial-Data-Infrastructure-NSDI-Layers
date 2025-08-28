@@ -1,47 +1,48 @@
-name: Extract ArcGIS Layers
+name: Onewaysync
 
 on:
   schedule:
-    - cron: "0 2 * * 0"   # every Sunday at 2 AM UTC
-  workflow_dispatch:       # allow manual trigger
+    - cron: "0 2 * * 0"  # every Sunday at 2 AM UTC
+  workflow_dispatch:      # allow manual trigger
 
 jobs:
   update-layers:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gdal-bin curl jq
+          sudo apt-get install -y curl jq sha256sum
 
       - name: Download all ArcGIS layers
         run: |
           mkdir -p layers
           BASE_URL="https://gisapps.nsdi.gov.lk/server/rest/services/Srilanka/All_Layers/MapServer"
 
-          # Get list of layer IDs
-          LAYER_IDS=$(curl -s "${BASE_URL}?f=json" | jq -r '.layers[].id')
+          # Get list of layer IDs and names
+          LAYERS=$(curl -s "${BASE_URL}?f=json" | jq -r '.layers[] | "\(.id) \(.name)"')
 
-          for ID in $LAYER_IDS; do
-            echo "Downloading layer $ID..."
-            ogr2ogr -f GeoJSON "layers/layer_${ID}.json" "${BASE_URL}/${ID}"
-          done
+          while read -r ID NAME; do
+            FILE_NAME=$(echo "$NAME" | tr ' ' '_').geojson
+            echo "Downloading $NAME..."
+            curl -s "${BASE_URL}/${ID}/query?where=1=1&outFields=*&f=geojson" -o "layers/$FILE_NAME"
+          done <<< "$LAYERS"
 
       - name: Generate checksums
         run: |
           mkdir -p .checksums
-          sha256sum layers/*.json > .checksums/new_sums.txt
+          sha256sum layers/*.geojson > .checksums/new_sums.txt
 
       - name: Compare checksums
         id: checksum
         run: |
           if [ -f .checksums/old_sums.txt ]; then
             if cmp -s .checksums/new_sums.txt .checksums/old_sums.txt; then
-              echo "No changes in layers."
+              echo "No changes detected."
               echo "changed=false" >> $GITHUB_OUTPUT
               exit 0
             fi
