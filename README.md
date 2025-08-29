@@ -1,3 +1,8 @@
+
+Updated on 8/29/2025
+
+Note: https://github.com/thiwaK/open-gis-lk will contain cleaned layers in the future. https://github.com/thiwaK/open-gis-lk/issues/18#issuecomment-3231664404
+
 # 🗺️ Sri Lanka National Spatial Data Infrastructure (NSDI) Layers
 
 This repository provides **scripts and data downloads** from the official [Sri Lanka NSDI Geoportal](https://gisapps.nsdi.gov.lk/server/rest/services/Srilanka/All_Layers/MapServer), which hosts a collection of national GIS datasets.
