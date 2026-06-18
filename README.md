@@ -1,11 +1,11 @@
-# 🗺️ Sri Lanka National Spatial Data Infrastructure (NSDI) Layers
+# Sri Lanka National Spatial Data Infrastructure (NSDI) Layers
 
 > **Last Updated:** August 29, 2025  
 > **Note:** `open-gis-lk` will contain cleaned layers in the future. See [this comment](link-to-comment) for details.
 
 This repository provides automation scripts and data downloads from the official **Sri Lanka NSDI Geoportal**, the central hub for national GIS datasets hosted by the Survey Department of Sri Lanka.
 
-## 🚀 Overview
+## Overview
 The National Spatial Data Infrastructure (NSDI) in Sri Lanka provides access to government-verified geospatial data. This collection includes critical layers such as administrative boundaries, land use, and transportation networks.
 
 ### Use Cases:
@@ -15,14 +15,14 @@ The National Spatial Data Infrastructure (NSDI) in Sri Lanka provides access to 
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 * `download_layers.py`: Python script to fetch all available layers in their original formats.
 * **Release file**: Compressed archive containing the complete dataset.
 * `Layers/`: Directory containing individual GIS layers.
 
 ---
 
-## 🛠️ Usage
+## Usage
 
 ### 1. Inspect Available Layers
 Use this script to list all layers currently hosted on the NSDI MapServer.
